@@ -30,10 +30,10 @@
         <h1 class="text-2xl font-bold text-blue-600">RomCare Clinic</h1>
       </div>
       <nav class="hidden md:flex space-x-6 text-gray-700 font-semibold">
-        <a href="#home" class="hover:text-blue-600 transition">Home</a>
-        <a href="#features" class="hover:text-blue-600 transition">Features</a>
-        <a href="#tentang" class="hover:text-blue-600 transition">About</a>
-        <a href="#kontak" class="hover:text-blue-600 transition">Contact</a>
+        <a href="#home" class="hover:text-blue-600 transition">HOME</a>
+        <a href="#features" class="hover:text-blue-600 transition">FEATURES</a>
+        <a href="#tentang" class="hover:text-blue-600 transition">ABOUT</a>
+        <a href="#kontak" class="hover:text-blue-600 transition">CONTACT</a>
       </nav>
       <a href="auth/login.php" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition">
         Login

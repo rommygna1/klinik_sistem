@@ -43,83 +43,121 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!-- Sidebar kiri -->
+<!DOCTYPE html>
+<html lang="id">
 
-<body class="bg-white flex min-h-screen font-modify">
+<head>
+    <meta charset="UTF-8">
+    <title>Pendaftaran Konsultasi - Klinik</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+        }
+        .gradient-card {
+            background: linear-gradient(135deg, #1e90ff 0%, #00c6fb 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .table-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
 
+<body class="bg-gray-50">
     <?php include '../components/sidebar.php'; ?>
 
-    <!-- Konten kanan -->
-    <main class="flex-1 ml-64 p-6 bg-gray-50 min-h-screen">
-        <h1 class="text-3xl font-bold mb-6 text-blue-700">Form Pendaftaran Konsultasi</h1>
+    <main class="ml-72 p-8">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-1">Pendaftaran Konsultasi</h1>
+                <p class="text-gray-600">Manajemen pendaftaran konsultasi pasien</p>
+            </div>
+        </div>
 
         <?php if ($errors): ?>
-        <div class="bg-red-100 text-red-700 p-4 rounded-lg border border-red-300 mb-4 shadow-sm">
+        <div class="bg-red-100 text-red-700 p-4 rounded-lg glass-effect mb-6">
             <?= implode('<br>', $errors) ?>
         </div>
         <?php endif; ?>
 
         <?php if ($success): ?>
-        <div class="bg-blue-100 text-blue-800 p-4 rounded-lg border border-blue-300 mb-4 shadow-sm">
+        <div class="bg-green-100 text-green-700 p-4 rounded-lg glass-effect mb-6">
             <?= $success ?>
         </div>
         <?php endif; ?>
 
-        <form method="POST"
-            class="max-w-xl bg-white border border-blue-300 p-6 rounded-xl shadow-lg space-y-5 transition">
-            <div>
-                <label for="pasien_id" class="block font-semibold mb-1 text-blue-700">Pasien</label>
-                <select id="pasien_id" name="pasien_id" required
-                    class="w-full border border-blue-400 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                    <option value="">-- Pilih Pasien --</option>
-                    <?php
-                mysqli_data_seek($pasienQuery, 0);
-                while ($row = mysqli_fetch_assoc($pasienQuery)): ?>
-                    <option value="<?= $row['id'] ?>"><?= htmlspecialchars($row['username']) ?></option>
-                    <?php endwhile; ?>
-                </select>
-            </div>
+        <div class="glass-effect rounded-xl p-6 shadow-lg max-w-3xl">
+            <form method="POST" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="relative">
+                        <label for="pasien_id" class="block text-sm font-medium text-gray-700 mb-1">Pasien</label>
+                        <div class="relative">
+                            <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
+                            <select id="pasien_id" name="pasien_id" required
+                                class="w-full pl-10 pr-4 py-2 bg-white/50 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                <option value="">Pilih Pasien</option>
+                                <?php while ($row = mysqli_fetch_assoc($pasienQuery)): ?>
+                                <option value="<?= $row['id'] ?>"><?= htmlspecialchars($row['username']) ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                    </div>
 
-            <div>
-                <label for="dokter_id" class="block font-semibold mb-1 text-blue-700">Dokter</label>
-                <select id="dokter_id" name="dokter_id" required
-                    class="w-full border border-blue-400 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                    <option value="">-- Pilih Dokter --</option>
-                    <?php
-                mysqli_data_seek($dokterQuery, 0);
-                while ($row = mysqli_fetch_assoc($dokterQuery)): ?>
-                    <option value="<?= $row['id'] ?>"><?= htmlspecialchars($row['username']) ?></option>
-                    <?php endwhile; ?>
-                </select>
-            </div>
+                    <div class="relative">
+                        <label for="dokter_id" class="block text-sm font-medium text-gray-700 mb-1">Dokter</label>
+                        <div class="relative">
+                            <i class="fas fa-user-md absolute left-3 top-3 text-gray-400"></i>
+                            <select id="dokter_id" name="dokter_id" required
+                                class="w-full pl-10 pr-4 py-2 bg-white/50 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                <option value="">Pilih Dokter</option>
+                                <?php while ($row = mysqli_fetch_assoc($dokterQuery)): ?>
+                                <option value="<?= $row['id'] ?>"><?= htmlspecialchars($row['username']) ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                    </div>
 
-            <div>
-                <label for="tanggal" class="block font-semibold mb-1 text-blue-700">Tanggal Konsultasi</label>
-                <input type="date" id="tanggal" name="tanggal" required
-                    class="w-full border border-blue-400 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
-            </div>
+                    <div class="relative">
+                        <label for="tanggal" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Konsultasi</label>
+                        <div class="relative">
+                            <i class="fas fa-calendar absolute left-3 top-3 text-gray-400"></i>
+                            <input type="date" id="tanggal" name="tanggal" required
+                                class="w-full pl-10 pr-4 py-2 bg-white/50 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all" />
+                        </div>
+                    </div>
 
-            <div>
-                <label for="keluhan" class="block font-semibold mb-1 text-blue-700">Keluhan</label>
-                <textarea id="keluhan" name="keluhan" rows="4" required
-                    class="w-full border border-blue-400 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                    placeholder="Tuliskan keluhan Anda..."></textarea>
-            </div>
+                    <div class="relative md:col-span-2">
+                        <label for="keluhan" class="block text-sm font-medium text-gray-700 mb-1">Keluhan</label>
+                        <div class="relative">
+                            <i class="fas fa-comment-medical absolute left-3 top-3 text-gray-400"></i>
+                            <textarea id="keluhan" name="keluhan" rows="4" required
+                                class="w-full pl-10 pr-4 py-2 bg-white/50 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+                                placeholder="Tuliskan keluhan pasien..."></textarea>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="flex justify-end">
-                <button type="submit"
-                    class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
-                    Daftar Konsultasi
-                </button>
-            </div>
-        </form>
+                <div class="flex justify-end mt-6">
+                    <button type="submit"
+                        class="gradient-card px-6 py-2.5 rounded-lg text-white font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2">
+                        <i class="fas fa-paper-plane"></i>
+                        Daftar Konsultasi
+                    </button>
+                </div>
+            </form>
+        </div>
     </main>
-
-    <style>
-    body {
-        display: flex;
-        min-height: 100vh;
-        background-color: #f3f4f6;
-        /* gray-100 */
-    }
-    </style>
+</body>
+</html>

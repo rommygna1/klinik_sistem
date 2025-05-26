@@ -30,7 +30,6 @@ while ($data = mysqli_fetch_assoc($queryPendapatanBulan)) {
 // Buat array label bulan (nama bulan)
 $namaBulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 ?>
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -40,115 +39,217 @@ $namaBulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Ok
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+        }
+        .gradient-card {
+            background: linear-gradient(135deg, #1e90ff 0%, #00c6fb 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
 </head>
 
-<body class="bg-white font-modify">
+<body class="bg-gray-50">
     <?php include '../components/sidebar.php'; ?>
 
-    <main class="ml-64 p-6">
-        <h1 class="text-3xl font-bold text-blue-500 mb-6">Dashboard Admin</h1>
+    <main class="ml-72 p-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-8">Dashboard Admin</h1>
 
         <!-- Total Pendapatan -->
-        <div class="mb-8 bg-white p-6 rounded-lg shadow">
-            <h2 class="text-xl font-semibold text-blue-600 mb-2">Total Pendapatan (<?= $year ?>)</h2>
-            <p class="text-3xl font-bold text-blue-800">Rp <?= number_format($totalPendapatan, 0, ',', '.') ?></p>
+        <div class="mb-8 gradient-card p-6 rounded-2xl shadow-lg text-white">
+            <h2 class="text-lg font-semibold mb-2 opacity-90">Total Pendapatan (<?= $year ?>)</h2>
+            <p class="text-3xl font-bold">Rp <?= number_format($totalPendapatan, 0, ',', '.') ?></p>
         </div>
 
         <!-- Grafik Pendapatan Bulanan -->
-        <div class="mb-10 bg-white p-6 rounded-lg shadow">
-            <h2 class="text-xl font-semibold text-blue-500 mb-4">Pendapatan Bulanan</h2>
-            <div class="relative h-64">
+        <div class="mb-10 glass-card p-6 rounded-2xl shadow-lg">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Pendapatan Bulanan</h2>
+            <div class="relative h-72">
                 <canvas id="pendapatanChart"></canvas>
             </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        </div>        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Data Pasien -->
-            <div class="bg-white p-4 rounded-lg shadow hover:shadow-md">
-                <div class="flex items-center justify-between mb-2">
-                    <h2 class="text-xl font-semibold text-blue-500">Data Pasien</h2>
-                    <i class="fas fa-user-injured text-blue-500 text-2xl"></i>
+            <div class="relative overflow-hidden rounded-2xl group">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-400 opacity-90"></div>
+                <div class="relative p-6">
+                    <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-white/20 rounded-lg">
+                                <i class="fas fa-user-injured text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-white">Data Pasien</h2>
+                                <p class="text-white/80 text-sm mt-1">Lihat dan kelola informasi pasien</p>
+                            </div>
+                        </div>
+                        <a href="crud.php" class="mt-4 group-hover:bg-white/30 bg-white/20 text-white w-full py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300">
+                            <span>Kelola Data</span>
+                            <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
                 </div>
-                <p class="text-gray-600">Lihat dan kelola informasi pasien.</p>
-                <a href="crud.php" class="text-blue-600 hover:underline mt-2 inline-block">Kelola</a>
             </div>
 
             <!-- Jadwal Dokter -->
-            <div class="bg-white p-4 rounded-lg shadow hover:shadow-md">
-                <div class="flex items-center justify-between mb-2">
-                    <h2 class="text-xl font-semibold text-blue-500">Jadwal Dokter</h2>
-                    <i class="fas fa-calendar-check text-blue-500 text-2xl"></i>
+            <div class="relative overflow-hidden rounded-2xl group">
+                <div class="absolute inset-0 bg-gradient-to-br from-cyan-500 to-blue-400 opacity-90"></div>
+                <div class="relative p-6">
+                    <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-white/20 rounded-lg">
+                                <i class="fas fa-calendar-check text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-white">Jadwal Dokter</h2>
+                                <p class="text-white/80 text-sm mt-1">Atur dan pantau jadwal dokter</p>
+                            </div>
+                        </div>
+                        <a href="jadwal_dokter.php" class="mt-4 group-hover:bg-white/30 bg-white/20 text-white w-full py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300">
+                            <span>Kelola Jadwal</span>
+                            <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
                 </div>
-                <p class="text-gray-600">Atur dan pantau jadwal dokter.</p>
-                <a href="jadwal_dokter.php" class="text-blue-600 hover:underline mt-2 inline-block">Kelola</a>
             </div>
 
             <!-- Pendaftaran -->
-            <div class="bg-white p-4 rounded-lg shadow hover:shadow-md">
-                <div class="flex items-center justify-between mb-2">
-                    <h2 class="text-xl font-semibold text-blue-500">Pendaftaran</h2>
-                    <i class="fas fa-notes-medical text-blue-500 text-2xl"></i>
+            <div class="relative overflow-hidden rounded-2xl group">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-500 opacity-90"></div>
+                <div class="relative p-6">
+                    <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-white/20 rounded-lg">
+                                <i class="fas fa-notes-medical text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-white">Pendaftaran</h2>
+                                <p class="text-white/80 text-sm mt-1">Lihat data pendaftaran pasien</p>
+                            </div>
+                        </div>
+                        <a href="pendaftaran_admin.php" class="mt-4 group-hover:bg-white/30 bg-white/20 text-white w-full py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300">
+                            <span>Kelola Pendaftaran</span>
+                            <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
                 </div>
-                <p class="text-gray-600">Lihat data pendaftaran pasien.</p>
-                <a href="pendaftaran_admin.php" class="text-blue-600 hover:underline mt-2 inline-block">Kelola</a>
             </div>
 
             <!-- Konsultasi -->
-            <div class="bg-white p-4 rounded-lg shadow hover:shadow-md">
-                <div class="flex items-center justify-between mb-2">
-                    <h2 class="text-xl font-semibold text-blue-500">Konsultasi</h2>
-                    <i class="fas fa-stethoscope text-blue-500 text-2xl"></i>
+            <div class="relative overflow-hidden rounded-2xl group">
+                <div class="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 opacity-90"></div>
+                <div class="relative p-6">
+                    <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-white/20 rounded-lg">
+                                <i class="fas fa-stethoscope text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-white">Konsultasi</h2>
+                                <p class="text-white/80 text-sm mt-1">Pantau sesi konsultasi</p>
+                            </div>
+                        </div>
+                        <a href="konsultasi.php" class="mt-4 group-hover:bg-white/30 bg-white/20 text-white w-full py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300">
+                            <span>Kelola Konsultasi</span>
+                            <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
                 </div>
-                <p class="text-gray-600">Pantau sesi konsultasi.</p>
-                <a href="konsultasi.php" class="text-blue-600 hover:underline mt-2 inline-block">Kelola</a>
             </div>
 
             <!-- Rekam Medis -->
-            <div class="bg-white p-4 rounded-lg shadow hover:shadow-md">
-                <div class="flex items-center justify-between mb-2">
-                    <h2 class="text-xl font-semibold text-blue-500">Rekam Medis</h2>
-                    <i class="fas fa-file-medical text-blue-500 text-2xl"></i>
+            <div class="relative overflow-hidden rounded-2xl group">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-400 opacity-90"></div>
+                <div class="relative p-6">
+                    <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-white/20 rounded-lg">
+                                <i class="fas fa-file-medical text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-white">Rekam Medis</h2>
+                                <p class="text-white/80 text-sm mt-1">Lihat riwayat rekam medis</p>
+                            </div>
+                        </div>
+                        <a href="rekam_medis.php" class="mt-4 group-hover:bg-white/30 bg-white/20 text-white w-full py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300">
+                            <span>Kelola Rekam Medis</span>
+                            <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
                 </div>
-                <p class="text-gray-600">Lihat riwayat rekam medis pasien.</p>
-                <a href="rekam_medis.php" class="text-blue-600 hover:underline mt-2 inline-block">Kelola</a>
             </div>
 
             <!-- Pembayaran -->
-            <div class="bg-white p-4 rounded-lg shadow hover:shadow-md">
-                <div class="flex items-center justify-between mb-2">
-                    <h2 class="text-xl font-semibold text-blue-500">Pembayaran</h2>
-                    <i class="fas fa-credit-card text-blue-500 text-2xl"></i>
+            <div class="relative overflow-hidden rounded-2xl group">
+                <div class="absolute inset-0 bg-gradient-to-br from-cyan-500 to-blue-400 opacity-90"></div>
+                <div class="relative p-6">
+                    <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-white/20 rounded-lg">
+                                <i class="fas fa-credit-card text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-white">Pembayaran</h2>
+                                <p class="text-white/80 text-sm mt-1">Kelola transaksi pembayaran</p>
+                            </div>
+                        </div>
+                        <a href="tagihan_kelola.php" class="mt-4 group-hover:bg-white/30 bg-white/20 text-white w-full py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300">
+                            <span>Kelola Pembayaran</span>
+                            <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
                 </div>
-                <p class="text-gray-600">Kelola transaksi pembayaran.</p>
-                <a href="tagihan_kelola.php" class="text-blue-600 hover:underline mt-2 inline-block">Kelola</a>
             </div>
         </div>
     </main>
 
     <script>
     const ctx = document.getElementById('pendapatanChart').getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(30, 144, 255, 0.5)');
+    gradient.addColorStop(1, 'rgba(0, 198, 251, 0.0)');
+    
     const pendapatanChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
             labels: <?= json_encode($namaBulan) ?>,
             datasets: [{
                 label: 'Pendapatan (Rp)',
                 data: <?= json_encode(array_values($pendapatanBulan)) ?>,
-                backgroundColor: 'rgba(59, 130, 246, 0.7)',  // blue-500 dengan opacity 0.7
-                borderColor: 'rgba(59, 130, 246, 1)',       // blue-500 full opacity
-
-                borderWidth: 1,
-                borderRadius: 4
+                borderColor: '#1e90ff',
+                backgroundColor: gradient,
+                borderWidth: 2,
+                pointBackgroundColor: '#ffffff',
+                pointBorderColor: '#1e90ff',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                fill: true,
+                tension: 0.4
             }]
         },
         options: {
             scales: {
                 y: {
                     beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
                     ticks: {
                         callback: function(value) {
                             return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                         }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
                     }
                 }
             },
@@ -159,6 +260,10 @@ $namaBulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Ok
             },
             responsive: true,
             maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
         }
     });
     </script>

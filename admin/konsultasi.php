@@ -52,26 +52,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Form Konsultasi - Klinik Sehat</title>
+    <meta charset="UTF-8">
+    <title>Form Konsultasi - Klinik</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+        }
+        .gradient-card {
+            background: linear-gradient(135deg, #1e90ff 0%, #00c6fb 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .table-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
 </head>
 
-<body class="bg-white font-modify flex min-h-screen font-sans text-gray-800">
+<body class="bg-gray-50">
     <?php include '../components/sidebar.php'; ?>
 
-    <main class="flex-1 ml-64 p-10">
-        <h2 class="text-3xl font-bold text-blue-700 mb-6">Form Konsultasi</h2>
+    <main class="ml-72 p-8">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-1">Form Konsultasi</h1>
+                <p class="text-gray-600">Manajemen konsultasi pasien dengan dokter</p>
+            </div>
+        </div>
 
         <?php if ($success): ?>
-        <div class="mb-4 p-4 bg-blue-100 text-blue-800 border border-blue-300 rounded-lg shadow-sm">
+        <div class="bg-green-100 text-green-700 p-4 rounded-lg glass-effect mb-6">
             Konsultasi berhasil didaftarkan. Silakan tunggu konfirmasi dari dokter.
         </div>
         <?php endif; ?>
 
         <?php if ($errors): ?>
-        <div class="mb-4 p-4 bg-red-100 text-red-800 border border-red-300 rounded-lg shadow-sm">
+        <div class="bg-red-100 text-red-700 p-4 rounded-lg glass-effect mb-6">
             <ul class="list-disc pl-5 space-y-1">
                 <?php foreach ($errors as $error): ?>
                 <li><?= htmlspecialchars($error) ?></li>
@@ -80,44 +107,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <?php endif; ?>
 
-        <form action="" method="post"
-            class="bg-white p-8 rounded-xl shadow-lg max-w-xl border border-blue-200 space-y-5">
-            <div>
-                <label for="dokter_id" class="block mb-2 font-semibold text-blue-700">Pilih Dokter</label>
-                <select name="dokter_id" id="dokter_id"
-                    class="w-full border border-blue-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required>
-                    <option value="">-- Pilih Dokter --</option>
-                    <?php foreach ($dokters as $d): ?>
-                    <option value="<?= $d['id'] ?>"
-                        <?= (isset($_POST['dokter_id']) && $_POST['dokter_id'] == $d['id']) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($d['username']) ?>
-                    </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+        <div class="glass-effect rounded-xl p-6 shadow-lg max-w-3xl">
+            <form method="POST" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="relative">
+                        <label for="dokter_id" class="block text-sm font-medium text-gray-700 mb-1">Pilih Dokter</label>
+                        <div class="relative">
+                            <i class="fas fa-user-md absolute left-3 top-3 text-gray-400"></i>
+                            <select name="dokter_id" id="dokter_id" required
+                                class="w-full pl-10 pr-4 py-2 bg-white/50 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                <option value="">Pilih Dokter</option>
+                                <?php foreach ($dokters as $d): ?>
+                                <option value="<?= $d['id'] ?>"
+                                    <?= (isset($_POST['dokter_id']) && $_POST['dokter_id'] == $d['id']) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($d['username']) ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
 
-            <div>
-                <label for="tanggal" class="block mb-2 font-semibold text-blue-700">Tanggal Konsultasi</label>
-                <input type="date" name="tanggal" id="tanggal"
-                    class="w-full border border-blue-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required value="<?= htmlspecialchars($_POST['tanggal'] ?? '') ?>" />
-            </div>
+                    <div class="relative">
+                        <label for="tanggal" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Konsultasi</label>
+                        <div class="relative">
+                            <i class="fas fa-calendar absolute left-3 top-3 text-gray-400"></i>
+                            <input type="date" name="tanggal" id="tanggal" required
+                                class="w-full pl-10 pr-4 py-2 bg-white/50 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                                value="<?= htmlspecialchars($_POST['tanggal'] ?? '') ?>" />
+                        </div>
+                    </div>
 
-            <div>
-                <label for="keluhan" class="block mb-2 font-semibold text-blue-700">Keluhan</label>
-                <textarea name="keluhan" id="keluhan" rows="4"
-                    class="w-full border border-blue-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required><?= htmlspecialchars($_POST['keluhan'] ?? '') ?></textarea>
-            </div>
+                    <div class="relative md:col-span-2">
+                        <label for="keluhan" class="block text-sm font-medium text-gray-700 mb-1">Keluhan</label>
+                        <div class="relative">
+                            <i class="fas fa-comment-medical absolute left-3 top-3 text-gray-400"></i>
+                            <textarea name="keluhan" id="keluhan" rows="4" required
+                                class="w-full pl-10 pr-4 py-2 bg-white/50 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+                                placeholder="Tuliskan keluhan pasien..."><?= htmlspecialchars($_POST['keluhan'] ?? '') ?></textarea>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="text-right">
-                <button type="submit"
-                    class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-semibold">
-                    Kirim Konsultasi
-                </button>
-            </div>
-        </form>
+                <div class="flex justify-end mt-6">
+                    <button type="submit"
+                        class="gradient-card px-6 py-2.5 rounded-lg text-white font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2">
+                        <i class="fas fa-paper-plane"></i>
+                        Kirim Konsultasi
+                    </button>
+                </div>
+            </form>
+        </div>
     </main>
 </body>
 

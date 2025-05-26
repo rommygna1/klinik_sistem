@@ -36,60 +36,98 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<body class="bg-white flex min-h-screen font-modify">
+<!DOCTYPE html>
+<html lang="id">
 
+<head>
+    <meta charset="UTF-8">
+    <title>Input Tagihan - Klinik</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+        }
+        .gradient-card {
+            background: linear-gradient(135deg, #1e90ff 0%, #00c6fb 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .table-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
     <?php include '../components/sidebar.php'; ?>
 
-    <main class="flex-1 ml-64 p-8 bg-white min-h-screen font-modify">
-        <h1 class="text-3xl font-bold mb-6 text-blue-600">Input Tagihan Pembayaran</h1>
+    <main class="ml-72 p-8">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-1">Input Tagihan Pembayaran</h1>
+                <p class="text-gray-600">Manajemen tagihan pembayaran pasien</p>
+            </div>
+        </div>
 
         <?php if ($errors): ?>
-        <div class="bg-red-100 text-red-700 p-3 rounded mb-4 border border-red-300">
+        <div class="bg-red-100 text-red-700 p-4 rounded-lg glass-effect mb-6">
             <?= implode('<br>', $errors) ?>
         </div>
         <?php endif; ?>
 
         <?php if ($success): ?>
-        <div class="bg-blue-100 text-blue-700 p-3 rounded mb-4 border border-blue-300">
+        <div class="bg-green-100 text-green-700 p-4 rounded-lg glass-effect mb-6">
             <?= $success ?>
         </div>
         <?php endif; ?>
 
-        <div class="max-w-xl bg-white border border-blue-400 p-6 rounded-xl shadow space-y-6">
-            <form method="POST" class="space-y-5">
-                <div>
-                    <label for="pasien_id" class="block font-semibold mb-2 text-blue-700">Pasien</label>
-                    <select id="pasien_id" name="pasien_id" required
-                        class="w-full border border-blue-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                        <option value="">-- Pilih Pasien --</option>
-                        <?php while ($row = mysqli_fetch_assoc($pasienQuery)): ?>
-                        <option value="<?= $row['id'] ?>"><?= htmlspecialchars($row['username']) ?></option>
-                        <?php endwhile; ?>
-                    </select>
+        <div class="glass-effect rounded-xl p-6 shadow-lg max-w-3xl">
+            <form method="POST" class="space-y-6">
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="relative">
+                        <label for="pasien_id" class="block text-sm font-medium text-gray-700 mb-1">Pilih Pasien</label>
+                        <div class="relative">
+                            <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
+                            <select id="pasien_id" name="pasien_id" required
+                                class="w-full pl-10 pr-4 py-2 bg-white/50 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all">
+                                <option value="">Pilih Pasien</option>
+                                <?php while ($row = mysqli_fetch_assoc($pasienQuery)): ?>
+                                <option value="<?= $row['id'] ?>"><?= htmlspecialchars($row['username']) ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <label for="nominal" class="block text-sm font-medium text-gray-700 mb-1">Nominal Tagihan (Rp)</label>
+                        <div class="relative">
+                            <i class="fas fa-money-bill absolute left-3 top-3 text-gray-400"></i>
+                            <input type="number" id="nominal" name="nominal" min="1" step="0.01" required
+                                class="w-full pl-10 pr-4 py-2 bg-white/50 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                                placeholder="Masukkan nominal tagihan" />
+                        </div>
+                    </div>
                 </div>
 
-                <div>
-                    <label for="nominal" class="block font-semibold mb-2 text-blue-700">Nominal Tagihan (Rp)</label>
-                    <input type="number" id="nominal" name="nominal" min="1" step="0.01" required
-                        class="w-full border border-blue-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                        placeholder="Masukkan nominal tagihan" />
-                </div>
-
-                <div class="text-right">
+                <div class="flex justify-end mt-6">
                     <button type="submit"
-                        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-semibold shadow">
+                        class="gradient-card px-6 py-2.5 rounded-lg text-white font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2">
+                        <i class="fas fa-plus"></i>
                         Tambah Tagihan
                     </button>
                 </div>
             </form>
         </div>
     </main>
-
-
-    <style>
-    body {
-        display: flex;
-        min-height: 100vh;
-        background-color: #f3f4f6;
-    }
-    </style>
+</body>
+</html>
