@@ -1,0 +1,13 @@
+admin@klinik.com
+password123
+
+dokter@klinik.com
+password123
+
+resepsionis@klinik.com
+password123
+
+pasien@klinik.com
+password123
+
+passien>>register
