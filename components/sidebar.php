@@ -102,9 +102,8 @@ $role = $_SESSION['user']['role'];
             </a>
             <a href="../dokter/tambah_dokter.php" class="sidebar-link flex items-center gap-3">
                 <i class="fas fa-user-md"></i> Dokter
-            </a>
-            <a href="../dokter/konsultasi.php" class="sidebar-link flex items-center gap-3">
-                <i class="fas fa-comments-medical"></i> Konsultasi
+            </a>            <a href="../dokter/konsultasi.php" class="sidebar-link flex items-center gap-3">
+                <i class="fas fa-comment-medical"></i> Konsultasi
             </a>
             <a href="../dokter/hystory_rekam_medis.php" class="sidebar-link flex items-center gap-3">
                 <i class="fas fa-history"></i> Daftar Rekam Medis
