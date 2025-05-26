@@ -29,82 +29,138 @@ $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $pasien_id);
 $stmt->execute();
 $result = $stmt->get_result();
-
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Pasien - Rekam Medis Saya</title>
+    <title>Rekam Medis - RomCare Clinic</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                fontFamily: {
-                    modify: ['Inter', 'sans-serif'],
-                },
-                colors: {
-                    primary: '#3B82F6', // blue-500
-                }
-            }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
         }
-    };
-    </script>
+        .gradient-card {
+            background: linear-gradient(135deg, #1e90ff 0%, #00c6fb 100%);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .table-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
 </head>
 
-<body class="bg-gray-100 min-h-screen flex font-modify">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-white shadow-md min-h-screen sticky top-0">
-        <?php include '../components/sidebar.php'; ?>
-    </aside>
+<body class="bg-gray-50">
+    <?php include '../components/sidebar.php'; ?>
 
-    <!-- Konten Utama -->
-    <main class="flex-1 p-8 overflow-auto bg-white rounded-l-lg shadow">
-        <!-- Judul -->
-        <div class="flex items-center gap-3 mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 7v10a1 1 0 001 1h4m10-11h2a1 1 0 011 1v10a1 1 0 01-1 1h-2M7 7V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-            </svg>
-            <h1 class="text-3xl font-bold text-primary">Rekam Medis Saya</h1>
+    <main class="ml-72 p-8">
+        <!-- Header Section -->
+        <div class="gradient-card rounded-2xl p-8 mb-8 text-white relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 opacity-10">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#FFFFFF" d="M47.5,-57.5C59.2,-46.1,65.1,-29.3,65.6,-13.1C66.1,3.1,61.1,18.6,51.8,30.5C42.5,42.4,28.9,50.6,13.4,55.2C-2.1,59.8,-19.4,60.8,-33.9,54.3C-48.4,47.8,-60.1,33.9,-65.3,17.1C-70.5,0.3,-69.3,-19.4,-60.1,-33.8C-50.9,-48.2,-33.7,-57.4,-16.1,-61.4C1.5,-65.4,19.4,-64.2,35.8,-68.9C52.2,-73.6,67.1,-84.2,47.5,-57.5Z" transform="translate(100 100)" />
+                </svg>
+            </div>
+            <div class="relative z-10 flex justify-between items-start">
+                <div>
+                    <h1 class="text-3xl font-bold mb-2">Rekam Medis</h1>
+                    <p class="text-blue-100">Riwayat rekam medis Anda di RomCare Clinic</p>
+                </div>
+                <div class="w-12 h-12 gradient-card rounded-lg flex items-center justify-center bg-white/20 backdrop-blur-sm">
+                    <i class="fas fa-notes-medical text-white text-2xl"></i>
+                </div>
+            </div>
         </div>
 
-        <!-- Tabel Rekam Medis -->
         <?php if ($result->num_rows === 0): ?>
-        <p class="text-gray-700">Belum ada rekam medis.</p>
+        <div class="glass-effect rounded-xl p-8 text-center">
+            <div class="w-16 h-16 gradient-card rounded-full mx-auto flex items-center justify-center mb-4">
+                <i class="fas fa-file-medical text-white text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">Belum Ada Rekam Medis</h3>
+            <p class="text-gray-600">Anda belum memiliki riwayat rekam medis di RomCare Clinic.</p>
+        </div>
         <?php else: ?>
-        <div class="overflow-x-auto rounded-lg border border-gray-200 shadow">
-            <table class="min-w-full text-sm text-left">
-                <thead class="bg-primary text-white">
-                    <tr>
-                        <th class="px-4 py-3 border-r border-blue-700">Tanggal</th>
-                        <th class="px-4 py-3 border-r border-blue-700">Dokter</th>
-                        <th class="px-4 py-3 border-r border-blue-700">Diagnosa</th>
-                        <th class="px-4 py-3 border-r border-blue-700">Tindakan</th>
-                        <th class="px-4 py-3">Resep</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($row = $result->fetch_assoc()): ?>
-                    <tr class="hover:bg-blue-50 border-t">
-                        <td class="px-4 py-3 border-r">
-                            <?= htmlspecialchars(date('d M Y', strtotime($row['created_at']))) ?></td>
-                        <td class="px-4 py-3 border-r"><?= htmlspecialchars($row['nama_dokter']) ?></td>
-                        <td class="px-4 py-3 border-r"><?= nl2br(htmlspecialchars($row['diagnosa'])) ?></td>
-                        <td class="px-4 py-3 border-r"><?= nl2br(htmlspecialchars($row['tindakan'])) ?></td>
-                        <td class="px-4 py-3"><?= $row['resep'] ? nl2br(htmlspecialchars($row['resep'])) : '-' ?></td>
-                    </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
+        <div class="table-container overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Tanggal</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Dokter</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Diagnosa</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Tindakan</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-600">Resep</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $result->fetch_assoc()): ?>
+                        <tr class="border-b border-gray-100 hover:bg-blue-50/30 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-calendar-day text-blue-500"></i>
+                                    </div>
+                                    <span class="text-gray-700">
+                                        <?= htmlspecialchars(date('d M Y', strtotime($row['created_at']))) ?>
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-user-md text-blue-500"></i>
+                                    </div>
+                                    <span class="text-gray-700"><?= htmlspecialchars($row['nama_dokter']) ?></span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-stethoscope text-blue-500"></i>
+                                    </div>
+                                    <span class="text-gray-700"><?= nl2br(htmlspecialchars($row['diagnosa'])) ?></span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-hand-holding-medical text-blue-500"></i>
+                                    </div>
+                                    <span class="text-gray-700"><?= nl2br(htmlspecialchars($row['tindakan'])) ?></span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-prescription text-blue-500"></i>
+                                    </div>
+                                    <span class="text-gray-700">
+                                        <?= $row['resep'] ? nl2br(htmlspecialchars($row['resep'])) : '-' ?>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <?php endif; ?>
     </main>
 </body>
-
 </html>
