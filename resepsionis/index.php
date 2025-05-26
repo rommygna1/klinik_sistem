@@ -20,54 +20,180 @@ $totalKonsultasi = mysqli_fetch_assoc($queryKonsultasi)['total'];
 
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Resepsionis</title>
+    <title>Dashboard Resepsionis - RomCare Clinic</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+        }
+        .gradient-card {
+            background: linear-gradient(135deg, #1e90ff 0%, #00c6fb 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
 </head>
 
-<body class="bg-blue-50 min-h-screen font-modify">
+<body class="bg-gray-50">
     <?php include '../components/sidebar.php'; ?>
 
-    <div class="p-6 ml-64">
-        <h1 class="text-3xl font-bold text-blue-700 mb-6">Dashboard Resepsionis</h1>
+    <main class="ml-72 p-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-8">Dashboard Resepsionis</h1>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Kartu Pendaftaran -->
-            <div class="bg-white p-6 rounded-xl shadow border-l-4 border-blue-500">
-                <h2 class="text-lg font-semibold text-gray-700 mb-2">Total Pendaftaran</h2>
-                <p class="text-4xl font-bold text-blue-600"><?= $totalPendaftaran ?></p>
+        <!-- Total Statistics -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="gradient-card p-6 rounded-2xl shadow-lg text-white relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 opacity-10">
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#FFFFFF" d="M47.5,-57.5C59.2,-46.1,65.1,-29.3,65.6,-13.1C66.1,3.1,61.1,18.6,51.8,30.5C42.5,42.4,28.9,50.6,13.4,55.2C-2.1,59.8,-19.4,60.8,-33.9,54.3C-48.4,47.8,-60.1,33.9,-65.3,17.1C-70.5,0.3,-69.3,-19.4,-60.1,-33.8C-50.9,-48.2,-33.7,-57.4,-16.1,-61.4C1.5,-65.4,19.4,-64.2,35.8,-68.9C52.2,-73.6,67.1,-84.2,47.5,-57.5Z" transform="translate(100 100)" />
+                    </svg>
+                </div>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="p-3 bg-white/20 rounded-lg">
+                            <i class="fas fa-user-plus text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold opacity-90">Total Pendaftaran</h2>
+                            <p class="text-3xl font-bold"><?= $totalPendaftaran ?></p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Kartu Konsultasi -->
-            <div class="bg-white p-6 rounded-xl shadow border-l-4 border-blue-500">
-                <h2 class="text-lg font-semibold text-gray-700 mb-2">Total Konsultasi</h2>
-                <p class="text-4xl font-bold text-blue-600"><?= $totalKonsultasi ?></p>
+            <div class="gradient-card p-6 rounded-2xl shadow-lg text-white relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 opacity-10">
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#FFFFFF" d="M47.5,-57.5C59.2,-46.1,65.1,-29.3,65.6,-13.1C66.1,3.1,61.1,18.6,51.8,30.5C42.5,42.4,28.9,50.6,13.4,55.2C-2.1,59.8,-19.4,60.8,-33.9,54.3C-48.4,47.8,-60.1,33.9,-65.3,17.1C-70.5,0.3,-69.3,-19.4,-60.1,-33.8C-50.9,-48.2,-33.7,-57.4,-16.1,-61.4C1.5,-65.4,19.4,-64.2,35.8,-68.9C52.2,-73.6,67.1,-84.2,47.5,-57.5Z" transform="translate(100 100)" />
+                    </svg>
+                </div>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="p-3 bg-white/20 rounded-lg">
+                            <i class="fas fa-stethoscope text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold opacity-90">Total Konsultasi</h2>
+                            <p class="text-3xl font-bold"><?= $totalKonsultasi ?></p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Chart -->
-        <div class="mt-10 bg-white p-6 rounded-xl shadow">
-            <h2 class="text-xl font-semibold text-blue-700 mb-4">Statistik Pendaftaran & Konsultasi</h2>
-            <canvas id="dataChart" height="100"></canvas>
+        <!-- Quick Access Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Pendaftaran Pasien Card -->
+            <div class="relative overflow-hidden rounded-2xl group">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-400 opacity-90"></div>
+                <div class="relative p-6">
+                    <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-white/20 rounded-lg">
+                                <i class="fas fa-user-plus text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-white">Pendaftaran</h2>
+                                <p class="text-white/80 text-sm mt-1">Daftarkan pasien baru</p>
+                            </div>
+                        </div>
+                        <a href="pendaftaran_offline.php" class="mt-4 group-hover:bg-white/30 bg-white/20 text-white w-full py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300">
+                            <span>Daftar Pasien</span>
+                            <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jadwal Dokter Card -->
+            <div class="relative overflow-hidden rounded-2xl group">
+                <div class="absolute inset-0 bg-gradient-to-br from-cyan-500 to-blue-400 opacity-90"></div>
+                <div class="relative p-6">
+                    <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-white/20 rounded-lg">
+                                <i class="fas fa-calendar-check text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-white">Jadwal Dokter</h2>
+                                <p class="text-white/80 text-sm mt-1">Lihat jadwal praktik</p>
+                            </div>
+                        </div>
+                        <a href="jadwal_dokter.php" class="mt-4 group-hover:bg-white/30 bg-white/20 text-white w-full py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300">
+                            <span>Lihat Jadwal</span>
+                            <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pembayaran Card -->
+            <div class="relative overflow-hidden rounded-2xl group">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-500 opacity-90"></div>
+                <div class="relative p-6">
+                    <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-white/20 rounded-lg">
+                                <i class="fas fa-credit-card text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-white">Pembayaran</h2>
+                                <p class="text-white/80 text-sm mt-1">Kelola pembayaran pasien</p>
+                            </div>
+                        </div>
+                        <a href="kelola_pembayaran.php" class="mt-4 group-hover:bg-white/30 bg-white/20 text-white w-full py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300">
+                            <span>Kelola Pembayaran</span>
+                            <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+
+        <!-- Chart Section -->
+        <div class="mt-8 glass-card rounded-2xl p-6 shadow-lg">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Statistik Pendaftaran & Konsultasi</h2>
+            <div class="relative h-72">
+                <canvas id="dataChart"></canvas>
+            </div>
+        </div>
+    </main>
 
     <script>
     const ctx = document.getElementById('dataChart').getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(30, 144, 255, 0.5)');
+    gradient.addColorStop(1, 'rgba(0, 198, 251, 0.0)');
+
     new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
             labels: ['Pendaftaran', 'Konsultasi'],
             datasets: [{
                 label: 'Jumlah',
                 data: [<?= $totalPendaftaran ?>, <?= $totalKonsultasi ?>],
-                backgroundColor: ['#34d399', '#10b981'],
-                borderRadius: 10
+                borderColor: '#1e90ff',
+                backgroundColor: gradient,
+                borderWidth: 2,
+                pointBackgroundColor: '#ffffff',
+                pointBorderColor: '#1e90ff',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                fill: true,
+                tension: 0.4
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     display: false
@@ -76,10 +202,19 @@ $totalKonsultasi = mysqli_fetch_assoc($queryKonsultasi)['total'];
             scales: {
                 y: {
                     beginAtZero: true,
-                    ticks: {
-                        stepSize: 1
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
                     }
                 }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
             }
         }
     });
