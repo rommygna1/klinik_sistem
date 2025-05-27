@@ -59,12 +59,13 @@ $stmt->bind_param("iiisss", $pendaftaran_id, $dokter_id, $pasien_id, $diagnosa, 
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Dokter - Rekam Medis Pasien</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Isi Rekam Medis</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
         body {
             font-family: 'Poppins', sans-serif;
             background: #f8fafc;
@@ -77,13 +78,6 @@ $stmt->bind_param("iiisss", $pendaftaran_id, $dokter_id, $pasien_id, $diagnosa, 
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .form-container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
     </style>
 </head>
 
@@ -91,65 +85,108 @@ $stmt->bind_param("iiisss", $pendaftaran_id, $dokter_id, $pasien_id, $diagnosa, 
     <?php include '../components/sidebar.php'; ?>
 
     <main class="ml-72 p-8">
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800 mb-1">Rekam Medis Pasien</h1>
-                <p class="text-gray-600">Isi rekam medis untuk pasien konsultasi</p>
+        <!-- Header Section -->
+        <div class="gradient-card rounded-2xl p-8 mb-8 text-white relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 opacity-10">
+                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#FFFFFF"
+                        d="M47.5,-57.5C59.2,-46.1,65.1,-29.3,65.6,-13.1C66.1,3.1,61.1,18.6,51.8,30.5C42.5,42.4,28.9,50.6,13.4,55.2C-2.1,59.8,-19.4,60.8,-33.9,54.3C-48.4,47.8,-60.1,33.9,-65.3,17.1C-70.5,0.3,-69.3,-19.4,-60.1,-33.8C-50.9,-48.2,-33.7,-57.4,-16.1,-61.4C1.5,-65.4,19.4,-64.2,35.8,-68.9C52.2,-73.6,67.1,-84.2,47.5,-57.5Z"
+                        transform="translate(100 100)" />
+                </svg>
+            </div>
+            <div class="relative z-10 flex justify-between items-start">
+                <div>
+                    <h1 class="text-3xl font-bold mb-2">Isi Rekam Medis Pasien</h1>
+                    <p class="text-blue-100">Catat hasil pemeriksaan pasien</p>
+                </div>
+                <div class="w-12 h-12 gradient-card rounded-lg flex items-center justify-center bg-white/20 backdrop-blur-sm">
+                    <i class="fas fa-file-medical text-white text-2xl"></i>
+                </div>
             </div>
         </div>
 
-        <div class="form-container p-6">
-            <form method="POST" action="" class="space-y-6">
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <i class="fas fa-user-injured mr-2 text-blue-500"></i>Diagnosa
-                            </label>
-                            <textarea name="diagnosa" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                                rows="4"></textarea>
-                        </div>
+        <?php if (!empty($error)): ?>
+        <div class="glass-effect p-4 rounded-xl mb-6 border-l-4 border-red-500">
+            <div class="flex items-center text-red-700">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <?= htmlspecialchars($error) ?>
+            </div>
+        </div>
+        <?php endif; ?>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <i class="fas fa-pills mr-2 text-blue-500"></i>Obat yang Diberikan
-                            </label>
-                            <textarea name="obat" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                                rows="4"></textarea>
+        <!-- Patient Info Card -->
+        <div class="glass-effect rounded-xl p-8 mb-6 max-w-3xl">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 gradient-card rounded-lg flex items-center justify-center">
+                    <i class="fas fa-user text-white text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-800 text-lg"><?= htmlspecialchars($pendaftaran['nama_pasien']) ?></h3>
+                    <p class="text-gray-600 text-sm">Pasien</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-calendar-day text-blue-500"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Tanggal Konsultasi</p>
+                        <p class="font-medium text-gray-800"><?= htmlspecialchars($pendaftaran['tanggal']) ?></p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-comment-medical text-blue-500"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Keluhan</p>
+                        <p class="font-medium text-gray-800"><?= htmlspecialchars($pendaftaran['keluhan']) ?></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Rekam Medis -->
+        <div class="glass-effect rounded-xl p-8 shadow-lg max-w-3xl">
+            <form method="POST" class="space-y-6">
+                <div class="space-y-6">
+                    <div class="relative">
+                        <label for="diagnosa" class="block text-sm font-medium text-gray-700 mb-1">Diagnosa *</label>
+                        <div class="relative">
+                            <i class="fas fa-stethoscope absolute left-3 top-3 text-gray-400"></i>
+                            <textarea id="diagnosa" name="diagnosa" required
+                                class="w-full pl-10 pr-4 py-2 bg-white/50 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+                                rows="4" placeholder="Masukkan hasil diagnosa"><?= $_POST['diagnosa'] ?? '' ?></textarea>
                         </div>
                     </div>
 
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <i class="fas fa-notes-medical mr-2 text-blue-500"></i>Catatan Tambahan
-                            </label>
-                            <textarea name="catatan"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                                rows="4"></textarea>
+                    <div class="relative">
+                        <label for="tindakan" class="block text-sm font-medium text-gray-700 mb-1">Tindakan *</label>
+                        <div class="relative">
+                            <i class="fas fa-hand-holding-medical absolute left-3 top-3 text-gray-400"></i>
+                            <textarea id="tindakan" name="tindakan" required
+                                class="w-full pl-10 pr-4 py-2 bg-white/50 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+                                rows="4" placeholder="Masukkan tindakan yang dilakukan"><?= $_POST['tindakan'] ?? '' ?></textarea>
                         </div>
+                    </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                <i class="fas fa-money-bill-wave mr-2 text-blue-500"></i>Biaya Konsultasi (Rp)
-                            </label>
-                            <input type="number" name="biaya" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                                placeholder="Masukkan biaya">
+                    <div class="relative">
+                        <label for="resep" class="block text-sm font-medium text-gray-700 mb-1">Resep (Opsional)</label>
+                        <div class="relative">
+                            <i class="fas fa-prescription absolute left-3 top-3 text-gray-400"></i>
+                            <textarea id="resep" name="resep"
+                                class="w-full pl-10 pr-4 py-2 bg-white/50 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all resize-none"
+                                rows="3" placeholder="Masukkan resep obat jika ada"><?= $_POST['resep'] ?? '' ?></textarea>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex justify-end space-x-4">
-                    <a href="konsultasi.php"
-                        class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                        <i class="fas fa-arrow-left mr-2"></i>Kembali
-                    </a>
+                <div class="flex justify-end mt-6">
                     <button type="submit"
-                        class="gradient-card px-6 py-2 text-white rounded-lg hover:shadow-lg transition-all duration-300">
-                        <i class="fas fa-save mr-2"></i>Simpan Rekam Medis
+                        class="gradient-card px-6 py-2.5 rounded-lg text-white font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2">
+                        <i class="fas fa-save"></i>
+                        Simpan Rekam Medis
                     </button>
                 </div>
             </form>
