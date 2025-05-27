@@ -58,7 +58,7 @@ $role = $_SESSION['user']['role'];
 
 <aside class="sidebar-gradient min-h-screen flex flex-col justify-between py-8 px-6 fixed left-0 top-0 z-30"    style="font-family: 'Poppins', sans-serif; width: 280px;">
     <div class="flex flex-col h-full">
-        <div class="flex items-center space-x-2 mb-3">
+        <div class="flex items-center space-x-2 mb-6">
             <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

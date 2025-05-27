@@ -9,133 +9,200 @@ include_once '../config/koneksi.php';
 
 $dokter_id = $_SESSION['user']['id'];
 
-// Ambil jadwal dokter sesuai dokter yang login
-$queryJadwal = "SELECT hari, jam_mulai, jam_selesai FROM jadwal_dokter WHERE dokter_id = ? ORDER BY FIELD(hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'), jam_mulai";
-$stmtJadwal = $conn->prepare($queryJadwal);
-$stmtJadwal->bind_param("i", $dokter_id);
-$stmtJadwal->execute();
-$resultJadwal = $stmtJadwal->get_result();
-$jadwals = $resultJadwal->fetch_all(MYSQLI_ASSOC);
-$stmtJadwal->close();
-
-// Ambil daftar konsultasi pasien untuk dokter ini
-// Ambil daftar konsultasi pasien untuk dokter ini
-$queryKonsul = "
-    SELECT p.id, u.username AS nama_pasien, p.tanggal, p.keluhan, p.status, p.created_at
-    FROM pendaftaran p
-    JOIN users u ON p.pasien_id = u.id AND u.role = 'pasien'
-    WHERE p.dokter_id = ?
-    ORDER BY p.tanggal DESC, p.created_at DESC
-";
-$stmtKonsul = $conn->prepare($queryKonsul);
-$stmtKonsul->bind_param("i", $dokter_id);
-$stmtKonsul->execute();
-$resultKonsul = $stmtKonsul->get_result();
-$konsultasis = $resultKonsul->fetch_all(MYSQLI_ASSOC);
-$stmtKonsul->close();
-
-
+// Ambil total konsultasi untuk dokter ini
+$queryTotalKonsul = "SELECT COUNT(*) as total FROM pendaftaran WHERE dokter_id = ?";
+$stmtTotalKonsul = $conn->prepare($queryTotalKonsul);
+$stmtTotalKonsul->bind_param("i", $dokter_id);
+$stmtTotalKonsul->execute();
+$totalKonsultasi = $stmtTotalKonsul->get_result()->fetch_assoc()['total'];
+$stmtTotalKonsul->close();
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dashboard Dokter - Klinik Sehat</title>
+    <meta charset="UTF-8">
+    <title>Dashboard Dokter - RomCare Clinic</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+        }
+        .gradient-card {
+            background: linear-gradient(135deg, #1e90ff 0%, #00c6fb 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
 </head>
 
-<body class="bg-white flex min-h-screen font-sans  font-modify">
+<body class="bg-gray-50">
     <?php include '../components/sidebar.php'; ?>
 
-    <main class="flex-1 ml-64 p-8">
-        <div class="flex items-center justify-between mb-8">
-            <h1 class="text-4xl font-bold text-blue-600">Dashboard Dokter</h1>
-            <!-- Gambar profil dokter -->
-            <div class="w-16 h-16 rounded-full overflow-hidden border-4 border-blue-600 shadow-md">
-                <img src="<?= htmlspecialchars($foto_dokter ?? 'https://png.pngtree.com/png-clipart/20231006/original/pngtree-cartoon-character-doctor-png-image_13129994.png') ?>"
-                    alt="Foto Dokter" class="object-cover w-full h-full" />
+    <main class="ml-72 p-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-8">Dashboard Dokter</h1>
+
+        <!-- Total Statistics -->
+        <div class="mb-8">
+            <div class="gradient-card p-6 rounded-2xl shadow-lg text-white relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 opacity-10">
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#FFFFFF" d="M47.5,-57.5C59.2,-46.1,65.1,-29.3,65.6,-13.1C66.1,3.1,61.1,18.6,51.8,30.5C42.5,42.4,28.9,50.6,13.4,55.2C-2.1,59.8,-19.4,60.8,-33.9,54.3C-48.4,47.8,-60.1,33.9,-65.3,17.1C-70.5,0.3,-69.3,-19.4,-60.1,-33.8C-50.9,-48.2,-33.7,-57.4,-16.1,-61.4C1.5,-65.4,19.4,-64.2,35.8,-68.9C52.2,-73.6,67.1,-84.2,47.5,-57.5Z" transform="translate(100 100)" />
+                    </svg>
+                </div>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="p-3 bg-white/20 rounded-lg">
+                            <i class="fas fa-stethoscope text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-semibold opacity-90">Total Konsultasi</h2>
+                            <p class="text-3xl font-bold"><?= $totalKonsultasi ?></p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Jadwal Dokter -->
-        <section class="mb-12">
-            <h2 class="text-2xl font-semibold mb-5 text-blue-700">Jadwal Praktek Anda</h2>
-            <?php if (count($jadwals) === 0): ?>
-            <p class="text-gray-700">Jadwal praktek belum tersedia.</p>
-            <?php else: ?>
-            <table class="min-w-full bg-white rounded-lg shadow border border-blue-200">
-                <thead>
-                    <tr class="bg-blue-600 text-white text-left">
-                        <th class="px-6 py-3 rounded-tl-lg">Hari</th>
-                        <th class="px-6 py-3">Jam Mulai</th>
-                        <th class="px-6 py-3 rounded-tr-lg">Jam Selesai</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($jadwals as $j): ?>
-                    <tr class="border-t border-blue-200 hover:bg-blue-50 transition-colors duration-200">
-                        <td class="px-6 py-4 text-gray-800 font-medium"><?= htmlspecialchars($j['hari']) ?></td>
-                        <td class="px-6 py-4 text-gray-700"><?= date('H:i', strtotime($j['jam_mulai'])) ?></td>
-                        <td class="px-6 py-4 text-gray-700">
-                            <?php
-                                    $jam_mulai = strtotime($j['jam_mulai']);
-                                    $jam_selesai = strtotime($j['jam_selesai']);
-                                    if ($jam_selesai <= $jam_mulai) {
-                                        echo date('H:i', $jam_selesai) . " (+1 hari)";
-                                    } else {
-                                        echo date('H:i', $jam_selesai);
-                                    }
-                                ?>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-            <?php endif; ?>
-        </section>
-
-        <!-- Daftar Konsultasi Pasien -->
-        <section>
-            <h2 class="text-2xl font-semibold mb-5 text-blue-700">Daftar Konsultasi Pasien</h2>
-            <?php if (count($konsultasis) === 0): ?>
-            <p class="text-gray-700">Belum ada konsultasi dari pasien.</p>
-            <?php else: ?>
-            <div class="overflow-x-auto">
-                <table class="min-w-full bg-white rounded-lg shadow border border-blue-200 text-sm">
-                    <thead>
-                        <tr class="bg-blue-600 text-white text-left">
-                            <th class="px-6 py-3 rounded-tl-lg">ID</th>
-                            <th class="px-6 py-3">Nama Pasien</th>
-                            <th class="px-6 py-3">Tanggal</th>
-                            <th class="px-6 py-3">Keluhan</th>
-                            <th class="px-6 py-3">Status</th>
-                            <th class="px-6 py-3 rounded-tr-lg">Didaftarkan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($konsultasis as $k): ?>
-                        <tr
-                            class="border-t border-blue-200 hover:bg-blue-50 transition-colors duration-200 align-top">
-                            <td class="px-6 py-4 text-gray-800 font-medium"><?= htmlspecialchars($k['id']) ?></td>
-                            <td class="px-6 py-4 text-gray-700"><?= htmlspecialchars($k['nama_pasien']) ?></td>
-                            <td class="px-6 py-4 text-gray-700"><?= htmlspecialchars($k['tanggal']) ?></td>
-                            <td class="px-6 py-4 text-gray-700 whitespace-pre-line">
-                                <?= htmlspecialchars($k['keluhan']) ?></td>
-                            <td class="px-6 py-4 text-gray-700 font-semibold">
-                                <?= htmlspecialchars(ucfirst($k['status'])) ?></td>
-                            <td class="px-6 py-4 text-gray-600"><?= date('d M Y H:i', strtotime($k['created_at'])) ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+        <!-- Chart Section -->
+        <div class="mb-8 glass-card rounded-2xl p-6 shadow-lg">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Statistik Konsultasi</h2>
+            <div class="relative h-72">
+                <canvas id="dataChart"></canvas>
             </div>
-            <?php endif; ?>
-        </section>
+        </div>
+
+        <!-- Quick Access Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Jadwal Saya Card -->
+            <div class="relative overflow-hidden rounded-2xl group">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-400 opacity-90"></div>
+                <div class="relative p-6">
+                    <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-white/20 rounded-lg">
+                                <i class="fas fa-calendar-check text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-white">Jadwal Saya</h2>
+                                <p class="text-white/80 text-sm mt-1">Lihat jadwal praktik Anda</p>
+                            </div>
+                        </div>
+                        <a href="jadwal_saya.php" class="mt-4 group-hover:bg-white/30 bg-white/20 text-white w-full py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300">
+                            <span>Lihat Jadwal</span>
+                            <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Konsultasi Card -->
+            <div class="relative overflow-hidden rounded-2xl group">
+                <div class="absolute inset-0 bg-gradient-to-br from-cyan-500 to-blue-400 opacity-90"></div>
+                <div class="relative p-6">
+                    <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-white/20 rounded-lg">
+                                <i class="fas fa-stethoscope text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-white">Konsultasi</h2>
+                                <p class="text-white/80 text-sm mt-1">Kelola konsultasi pasien</p>
+                            </div>
+                        </div>
+                        <a href="konsultasi.php" class="mt-4 group-hover:bg-white/30 bg-white/20 text-white w-full py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300">
+                            <span>Kelola Konsultasi</span>
+                            <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Riwayat Rekam Medis Card -->
+            <div class="relative overflow-hidden rounded-2xl group">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-500 opacity-90"></div>
+                <div class="relative p-6">
+                    <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-white/20 rounded-lg">
+                                <i class="fas fa-history text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-white">Riwayat</h2>
+                                <p class="text-white/80 text-sm mt-1">Lihat riwayat rekam medis</p>
+                            </div>
+                        </div>
+                        <a href="hystory_rekam_medis.php" class="mt-4 group-hover:bg-white/30 bg-white/20 text-white w-full py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300">
+                            <span>Lihat Riwayat</span>
+                            <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
+
+    <script>
+    const ctx = document.getElementById('dataChart').getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(30, 144, 255, 0.5)');
+    gradient.addColorStop(1, 'rgba(0, 198, 251, 0.0)');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+            datasets: [{
+                label: 'Jumlah Konsultasi',
+                data: [<?= $totalKonsultasi ?>, <?= $totalKonsultasi ?>, <?= $totalKonsultasi ?>, <?= $totalKonsultasi ?>, <?= $totalKonsultasi ?>, <?= $totalKonsultasi ?>, <?= $totalKonsultasi ?>, <?= $totalKonsultasi ?>, <?= $totalKonsultasi ?>, <?= $totalKonsultasi ?>, <?= $totalKonsultasi ?>, <?= $totalKonsultasi ?>],
+                borderColor: '#1e90ff',
+                backgroundColor: gradient,
+                borderWidth: 2,
+                pointBackgroundColor: '#ffffff',
+                pointBorderColor: '#1e90ff',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
+    </script>
 </body>
 
 </html>
